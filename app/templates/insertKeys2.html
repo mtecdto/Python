@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Inserir Chaves</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-dark">
+    <img src="static/mtec.png" alt="logo-mtec">
+    <div class="col-8 m-auto pt-2 pb-2 text-right">
+        <a href="/" class="btn btn-dark">Home</a>
+        <a href="/backup" class="btn btn-dark">Histórico</a>
+        <a href="/insertKeys2" class="btn btn-dark">InserirPV</a>
+    </div>
+</nav>
+<div class="col-8 m-auto pt-2 pb-2 text-center">
+  <form method="post" action="{% url 'insertKeys2' %}">
+    {% csrf_token %}
+    <div style="color: white;" class="form-group mt-4">Pv: {{form.pv}}</div>
+    <div style="color: white;" class="form-group mt-4">Chaves: {{form.chaves}}</div>
+    <div style="color: white;" class="form-group mt-4">NF: {{form.Nota_Fiscal}}</div>
+    <div style="color: white;" class="form-group mt-4">Pecom: {{form.PeCom}}</div>
+    <div style="color: white;" class="form-group mt-4">Sistema Operacional: {{form.so}}</div>
+    <div style="color: white;" class="form-group mt-4">UF: {{form.uf}}</div>
+    <div style="color: white;" class="form-group mt-4">Marca: {{form.marca}}</div>
+    <div style="color: white;" class="form-group mt-4">Modelo: {{form.modelo}}</div>
+    <input type="submit" class="btn btn-success" value="Salvar">
+  </form>
+</div>
+
+

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Inserir Chaves</title>
+</head>
+<body>
+    <div class="col-8' m-auto pt-2 pb-2 text-center">
+        <h1>SAW-Serviço de Ativação</h1>
+    </div>
+
+     <div class="col-8' m-auto pt-2 pb-2 text-right">
+        <a href="/form" class="btn btn-dark">Pv Bloco</a>
+    </div>
+
+    <div class="container">
+        <div class="contInput">
+            <div class="contInputChave">
+                <input type="text" id="chavesView" class="chavesInput" placeholder="Cole as chaves aqui">
+                <input type="text" id="pvView" class="chavesInput" placeholder="Número do PV">
+            </div>
+            <div class="contBtn">
+                <button class="btnGerar" onclick="generateBtn()">Gerar SQL Insert</button>
+                <button class="copiarBtn" onclick="clipboardCopyBtn()">Copiar SQL</button>
+            </div>
+        </div>
+        <div class="contOutput">
+            <p id="outputView" class="outputView"></p>
+        </div>
+    </div>
+    {% load static %}
+    <script src="{% static 'script.js' %}"></script>
+</body>
+</html>

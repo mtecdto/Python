@@ -1,0 +1,182 @@
+    {% extends 'main.html' %}
+    {% block content %}
+    {% if request.user.is_authenticated %}
+      {% if perms.admin.can_admin_user %}
+        <style>
+        /* Estilo para o título h1 */
+        h1 {
+            color: gray; /* Cor do texto */
+            font-size: 36px; /* Tamanho da fonte */
+            margin-bottom: 20px; /* Espaçamento inferior */
+            margin-top: 20px;
+            text-align: center; /* Alinhamento do texto ao centro */
+        }
+    </style>
+    <h1>Estoque</h1>
+    <body>
+<form method="post" action="{% url 'insertkeys3' %}" class="form-inline">
+    {% csrf_token %}
+
+    <div class="form-group mx-sm-3 mb-2">
+  <div style="color: white;" class="form-group mt-4">Chave(s):
+        {{ form.chaves }} </div>
+    </div>
+
+    <div class="form-group mx-sm-3 mb-2">
+          <div style="color: white;" class="form-group mt-4">Nota Fiscal:
+        {{form.Nota_Fiscal}}</div>
+    </div>
+
+    <div class="form-group mx-sm-3 mb-2">
+        <div style="color: white;" class="form-group mt-4">Pecom:
+        {{form.PeCom}}</div>
+    </div>
+
+    <div class="form-group mx-sm-3 mb-2">
+        <div style="color: white;" class="form-group mt-4">Tipo de chave(s):
+        {{ form.so }}</div>
+    </div>
+
+    <div class="form-group mx-sm-3 mb-2">
+        <div style="color: white;" class="form-group mt-4">UF:
+        {{form.uf}}</div>
+    </div>
+
+    <div class="form-group mx-sm-3 mb-2">
+            <button type="button" class="btn btn-primary  form-group mt-4" onclick="checkForDuplicates()">Inserir Chaves</button>
+    </div>
+</form>
+
+<script>
+    function checkForDuplicates() {
+        // Obtenha o valor do campo de chaves
+        var chavesInput = document.querySelector('[name="chaves"]');
+        var chavesValue = chavesInput.value;
+
+        // Divida o valor em um array de chaves
+        var chavesArray = chavesValue.split(/\s+/);
+
+        // Crie um conjunto para rastrear chaves duplicadas
+        var uniqueKeys = new Set();
+        var duplicateKeys = [];
+
+        // Verifique cada chave
+        for (var i = 0; i < chavesArray.length; i++) {
+            var chave = chavesArray[i].trim();
+
+            // Verifique se a chave já foi adicionada ao conjunto
+            if (uniqueKeys.has(chave)) {
+                duplicateKeys.push(chave);
+            } else {
+                uniqueKeys.add(chave);
+            }
+        }
+
+        // Verifique se há chaves duplicadas
+        if (duplicateKeys.length > 0) {
+            // Exiba uma mensagem de erro
+            alert('Foram encontradas chaves duplicadas: ' + duplicateKeys.join(', '));
+        } else {
+            // Envie o formulário se não houver chaves duplicadas
+            document.querySelector('form').submit();
+        }
+    }
+</script>
+
+
+        {% if messages %}
+<div class="alert-messages  text-center">
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% elif message.tags == 'success' %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+  <div class="col-8' m-auto pt-2 pb-2 text-center">
+
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Total de Chaves</th>
+              <th scope="col">Windows10</th>
+              <th scope="col">Windows11</th>
+            </tr>
+      </thead>
+      <tbody>
+           <tr>
+                <td scope="row" style="color: white;">{{quantidade_registros}}</td>
+                <td style="color: white;">{{quantidade_registros_w10}}</td>
+                <td style="color: white;">{{quantidade_registros_w11}}</td>
+           </tr>
+      </tbody>
+
+    </table>
+  <div class="col-8' m-auto pt-2 pb-2 text-center">
+        <form method="get">
+            <input type="text" id="search" name="search" class="form-control" placeholder="Buscar...">
+        </form>
+    </div>
+
+    <div class="col-8' m-auto pt-2 pb-2 text-center">
+
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Keycontent</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">NF</th>
+              <th scope="col">Pecom</th>
+              <th scope="col">Lab</th>
+              <th scope="col">Data</th>
+
+            </tr>
+      </thead>
+      <tbody>
+      {% for dbs in db %}
+           <tr>
+                <td style="color: white;">{{dbs.keycontent}}</td>
+                <td style="color: white;">{{dbs.so}}</td>
+                <td style="color: white;">{{dbs.Nota_Fiscal}}</td>
+                <td style="color: white;">{{dbs.PeCom}}</td>
+                <td style="color: white;">{{dbs.uf}}</td>
+                <td style="color: white;">{{dbs.data}}</td>
+           </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+    </div>
+    <div class="pagination">
+        <ul>
+        {% if db.has_previous %}
+             <li class="page-item"><a class="page-link" href="?page={{db.previous_page_number}}">Voltar</a></li>
+        {% endif %}
+
+        {% if db.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{db.next_page_number}}">Avançar</a></li>
+        {% endif %}
+        </ul>
+    </div>
+    {% load static %}
+    </div>
+<script src="{% static 'javascript.js' %}"></script>
+</body>
+</html>
+    {% else %}
+  <div class="mensagem-de-erro">
+    O seu usuário não tem permissão para acessar essa área. Contate o administrador!!!
+  </div>
+{% endif %}
+    {% else %}
+        Você não tem acesso a essa área!
+    {% endif %}
+
+
+        {% endblock %}

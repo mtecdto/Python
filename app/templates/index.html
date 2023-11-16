@@ -1,0 +1,196 @@
+    {% extends 'main.html' %}
+    {% block content %}
+    {% if request.user.is_authenticated %}
+    <style>
+        /* Estilo para o título h1 */
+        h1 {
+            color: gray; /* Cor do texto */
+            font-size: 36px; /* Tamanho da fonte */
+            margin-bottom: 20px; /* Espaçamento inferior */
+            margin-top: 20px;
+            text-align: center; /* Alinhamento do texto ao centro */
+        }
+    </style>
+    <h1>Produção</h1>
+<form method="post" action="{% url 'inserir_chaves' %}" class="form-inline">
+    {% csrf_token %}
+
+    <div class="form-group mx-sm-3 mb-2">
+  <div style="color: white;" class="form-group mt-4">Pv:
+        {{ form.novo_pv }} </div>
+    </div>
+
+    <div class="form-group mx-sm-3 mb-2">
+          <div style="color: white;" class="form-group mt-4">Nº Chaves:
+        {{ form.numero_de_chaves }}</div>
+    </div>
+
+    <div class="form-group mx-sm-3 mb-2">
+        <div style="color: white;" class="form-group mt-4">Tipo de Chave:
+        {{ form.so }}</div>
+    </div>
+
+    <div class="form-group mx-sm-3 mb-2">
+        <div style="color: white;" class="form-group mt-4">Marca:
+        {{ form.marca }}</div>
+    </div>
+
+    <div class="form-group mx-sm-3 mb-2">
+        <div style="color: white;" class="form-group mt-4">Modelo:
+        {{ form.modelo }}</div>
+    </div>
+
+    <div class="form-group mx-sm-3 mb-2">
+    <button type="submit" class="btn btn-primary  form-group mt-4" onclick="return confirm('Deseja realmente inserir a(s) chave(s) para o ambiente de produção?');">Inserir Chaves</button>
+    </div>
+
+</form>
+
+
+
+
+{% if messages %}
+<div class="alert-messages text-center">
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% elif message.tags == 'success' %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+
+  <div class="col-8' m-auto pt-2 pb-2 text-center">
+
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col" style="color: white;">Total de Chaves</th>
+              <th scope="col">Windows10</th>
+              <th scope="col">Windows11</th>
+              <th scope="col" style="color: lightgreen;">Ativadas</th>
+             <th scope="col" style="color: lightcoral;">Bloqueadas</th>
+             <th scope="col" style="color: lightgreen;" >Porcentagem de Ativadas</th>
+             <th scope="col" style="color: lightcoral;">Porcentagem de bloqueadas</th>
+             <th scope="col" style="color: yellow;" >Em uso</th>
+             <th scope="col" style="color: white;">Disponíveis</th>
+
+            </tr>
+      </thead>
+      <tbody>
+           <tr>
+                <td scope="row" style="color: white;">{{quantidade_registros}}</td>
+                <td style="color: white;">{{quantidade_registros_w10}}</td>
+                <td style="color: white;">{{quantidade_registros_w11}}</td>
+               <td style="color: lightgreen;">{{quantidade_keystate_3}}</td>
+               <td style="color: lightcoral;">{{quantidade_keystate_2}}</td>
+               <td style="color: lightgreen;">{{porcentagem_keystate_3}}%</td>
+               <td style="color: lightcoral;">{{porcentagem_keystate_2}}%</td>
+               <td style="color: yellow;">{{porcentagem_keystate_1}}%</td>
+               <td style="color: white;">{{porcentagem_keystate_0}}%</td>
+           </tr>
+      </tbody>
+
+         </table>
+    </div>
+
+<div class="col-8 m-auto pt-2 pb-2 d-flex justify-content-between align-items-right">
+    <form method="post" action="/criar_quantidade_maquinas/" style="margin-right: auto;">
+        {% csrf_token %}
+        <label style="color: white;" for="quantidade">Quantidade:</label>
+        <input type="text" id="quantidade" name="quantidade" required>
+        <button type="submit" class="btn btn-primary" onclick="return confirm('Deseja inseir a quantidade de máquinas que serão ativadas?');">Enviar</button>
+    </form>
+    <div>
+        <a href="{% url 'export_data_to_csv' %}" class="btn btn-primary mr-2">Exportar</a>
+        <a href="{% url 'estoque_keys_status_disponível' %}" class="btn btn-primary mr-2" onclick="return confirm('Deseja realmente retornar as chaves para o estoque? OBS: Apenas as chaves com status disponíveis serão retornadas.');">Retornar Estoque</a>
+        <a href="/atualizar_valores" class="btn btn-primary mr-2" onclick="return confirm('Deseja disponibilizar as chaves bloqueadas para uso do robô novamente?');">Reset</a>
+        <a href="/deleteAll" class="btn btn-danger" onclick="return confirm('Ao prosseguir com essa ação, as chaves serão transferidas para o backup do sistema. Deseja continuar?');">Limpar Banco</a>
+    </div>
+</div>
+
+
+    <div class="col-8' m-auto pt-2 pb-2 text-center">
+        <form method="get">
+            <input type="text" id="search" name="search" class="form-control" placeholder="Buscar...">
+        </form>
+    </div>
+
+    <div class="col-8' m-auto pt-2 pb-2 text-center">
+
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">PV</th>
+              <th scope="col">Keycontent</th>
+              <th scope="col">Versão</th>
+              <th scope="col">Serial</th>
+              <th scope="col" >Ativação</th>
+              <th scope="col">Disco</th>
+              <th scope="col">Memória</th>
+              <th scope="col">Data</th>
+              <th scope="col">Ações</th>
+            </tr>
+      </thead>
+      <tbody>
+      {% for dbs in db %}
+           <tr>
+                <td style="color: white;">{{dbs.pv}}</td>
+                <td style="color: white;">{{dbs.keycontent}}</td>
+                <td style="color: white;">{{dbs.so}}</td>
+                <td style="color: white;">{{dbs.serialcontent}}</td>
+                <td style="color: white;">{% if dbs.keystate == 3 %}
+                 <span style="color: lightgreen;">Ativado</span>
+            {% elif dbs.keystate == 2  %}
+                 <span style="color: lightcoral;">Bloqueado</span>
+            {% elif dbs.keystate == 0  %}
+                 <span style="color: white;">Disponível</span>
+            {% elif dbs.keystate == 1  %}
+                 <span style="color: yellow;">Em uso</span>
+            {% else %}
+                {{dbs.keystate}}
+            {% endif %}</td>
+                <td style="color: white;">{{dbs.disco}}</td>
+                <td style="color: white;">{{dbs.memoria}}</td>
+                <td style="color: white;">{{dbs.data}}</td>
+
+               <td>
+                   <a href="/view/{{dbs.idkey}}/" class="btn btn-dark">Visualizar</a>
+
+                   <a href="/edit/{{dbs.idkey}}/" class="btn btn-dark">Editar</a>
+                   {% if perms.admin.can_admin_user %}
+                   <a href="/delete/{{dbs.idkey}}/" class="btn btn-danger btnDel">Deletar</a>
+                   {%endif%}
+               </td>
+           </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+    </div>
+    <div class="pagination">
+        <ul>
+        {% if db.has_previous %}
+             <li class="page-item"><a class="page-link" href="?page={{db.previous_page_number}}">Voltar</a></li>
+        {% endif %}
+
+        {% if db.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{db.next_page_number}}">Avançar</a></li>
+        {% endif %}
+        </ul>
+    </div>
+    {% load static %}
+    </div>
+<script src="{% static 'javascript.js' %}"></script>
+</body>
+</html>
+    {% else %}
+        Você não tem acesso a essa área!
+    {% endif %}
+
+        {% endblock %}

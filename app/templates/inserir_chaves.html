@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inserir Chaves</title>
+</head>
+<body>
+    <h1>Inserir Chaves</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Inserir Chaves</button>
+    </form>
+</body>
+</html>

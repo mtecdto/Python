@@ -1,0 +1,100 @@
+    {% extends 'main.html' %}
+    {% block content %}
+    {% if request.user.is_authenticated %}
+                    {% if perms.admin.can_admin_user %}
+        <style>
+        /* Estilo para o título h1 */
+        h1 {
+            color: gray; /* Cor do texto */
+            font-size: 36px; /* Tamanho da fonte */
+            margin-bottom: 20px; /* Espaçamento inferior */
+            margin-top: 20px;
+            text-align: center; /* Alinhamento do texto ao centro */
+        }
+    </style>
+    <h1>Duplicadas</h1>
+<body>
+  <div class="col-8' m-auto pt-2 pb-2 text-center">
+
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Total de Chaves</th>
+              <th scope="col">Windows10</th>
+              <th scope="col">Windows11</th>
+            </tr>
+      </thead>
+      <tbody>
+           <tr>
+                <td scope="row" style="color: white;">{{quantidade_registros}}</td>
+                <td style="color: white;">{{quantidade_registros_w10}}</td>
+                <td style="color: white;">{{quantidade_registros_w11}}</td>
+           </tr>
+      </tbody>
+
+         </table>
+    </div>
+  <div class="col-8' m-auto pt-2 pb-2 text-right">
+   <a href="{% url 'export_data_to_csv_duplicados' %}" class="btn btn-primary">Exportar</a>
+   <div/>
+
+<div>
+    <div class="col-4' m-auto pt-2 pb-2 text-center">
+        <form method="get">
+            <input type="text" id="search" name="search" class="form-control" placeholder="Buscar...">
+        </form>
+    </div>
+
+    <div class="col-8' m-auto pt-2 pb-2 text-center">
+
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">PV</th>
+              <th scope="col">Keycontent</th>
+              <th scope="col">Serial</th>
+              <th scope="col">NF</th>
+              <th scope="col">Pecom</th>
+              <th scope="col">Data</th>
+            </tr>
+      </thead>
+      <tbody>
+      {% for dbs in tabela_Chaves_Duplicadas %}
+           <tr>
+               <th style="color: white;">{{dbs.pv}}</th>
+               <th style="color: white;">{{dbs.keycontent}}</th>
+               <th style="color: white;">{{dbs.serialcontent}}</th>
+               <th style="color: white;">{{dbs.Nota_Fiscal}}</th>
+               <th style="color: white;">{{dbs.PeCom}}</th>
+               <th style="color: white;">{{dbs.data_duplicada}}</th>
+           </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+    </div>
+    <div class="pagination">
+        <ul>
+         {% if tabela_Chaves_Duplicadas.has_previous %}
+             <li class="page-item"><a class="page-link" href="?page={{tabela_Chaves_Duplicadas.previous_page_number}}">Voltar</a></li>
+        {% endif %}
+
+        {% if tabela_Chaves_Duplicadas.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{tabela_Chaves_Duplicadas.next_page_number}}">Avançar</a></li>
+        {% endif %}
+        </ul>
+    </div>
+    {% load static %}
+    </div>
+<script src="{% static 'javascript.js' %}"></script>
+</body>
+</html>
+    {% else %}
+  <div class="mensagem-de-erro">
+    O seu usuário não tem permissão para acessar essa área. Contate o administrador!!!
+  </div>
+{% endif %}
+    {% else %}
+        Você não tem acesso a essa área!
+    {% endif %}
+            {% endblock %}

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exportar para Excel</title>
+</head>
+<body>
+    <h1>Exportar Dados para Excel</h1>
+    <form action="{% url 'exportar_excel' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Exportar para Excel</button>
+    </form>
+</body>
+</html>
